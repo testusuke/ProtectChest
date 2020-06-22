@@ -7,4 +7,4 @@ import org.bukkit.Material
  * Created on 2020/06/22
  * Author testusuke
  */
-data class ChestInformation(val location: Location,val name:String,val material:Material)
+data class ChestInformation(val location: Location,val name:String,val material:Material,val author:String,val date:String)

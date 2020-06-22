@@ -19,9 +19,6 @@ class Main: JavaPlugin() {
         var prefix:String = "§e[§aProtect§6Chest§e]§f"
     }
 
-    //  Map
-    var locationChestMap:MutableMap<Location, ChestInformation> = mutableMapOf()
-
     //  Item
     val wandItem:ItemStack by lazy {
         val item = ItemStack(Material.STONE_AXE)
