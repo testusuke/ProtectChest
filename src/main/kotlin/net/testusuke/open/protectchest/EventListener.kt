@@ -20,7 +20,11 @@ object EventListener:Listener {
             //  Item
             val item = player.inventory.itemInMainHand
             if(item.isSimilar(plugin.wandItem)){
+                //  Block
+                val block = e.clickedBlock ?: return
+                if(plugin.chestMaterialList(block.type)){
 
+                }
             }
         }
         //  右

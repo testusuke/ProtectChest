@@ -35,6 +35,31 @@ class Main: JavaPlugin() {
         item
     }
 
+    //  Chest Materila List
+    val chestMaterialList:MutableList<Material> by lazy {
+        val list = mutableListOf<Material>()
+        list.add(Material.CHEST)
+        list.add(Material.TRAPPED_CHEST)
+        list.add(Material.BARREL)
+        list.add(Material.SHULKER_BOX)
+        list.add(Material.BLACK_SHULKER_BOX)
+        list.add(Material.BLUE_SHULKER_BOX)
+        list.add(Material.BROWN_SHULKER_BOX)
+        list.add(Material.CYAN_SHULKER_BOX)
+        list.add(Material.GRAY_SHULKER_BOX)
+        list.add(Material.GREEN_SHULKER_BOX)
+        list.add(Material.LIGHT_BLUE_SHULKER_BOX)
+        list.add(Material.LIGHT_GRAY_SHULKER_BOX)
+        list.add(Material.LIME_SHULKER_BOX)
+        list.add(Material.MAGENTA_SHULKER_BOX)
+        list.add(Material.ORANGE_SHULKER_BOX)
+        list.add(Material.PINK_SHULKER_BOX)
+        list.add(Material.PURPLE_SHULKER_BOX)
+        list.add(Material.RED_SHULKER_BOX)
+        list.add(Material.WHITE_SHULKER_BOX)
+        list
+    }
+
     override fun onEnable() {
         plugin = this
 
