@@ -1,5 +1,8 @@
 package net.testusuke.open.protectchest
 
+import net.testusuke.open.protectchest.Main.Companion.enable
+import net.testusuke.open.protectchest.Main.Companion.plugin
+import net.testusuke.open.protectchest.Main.Companion.prefix
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -23,7 +26,12 @@ object ChestCommand:CommandExecutor {
         }
 
         when(args[0]){
-
+            "wand" -> {
+                if(sender.hasPermission(Permission.ADMIN)){
+                    sender.sendMessage("${prefix}§aWandを付与します。")
+                    sender.inventory.addItem(plugin.wandItem)
+                }else{sender.sendMessage("${prefix}§cあなたには権限がありません。")}
+            }
             "help" -> {sendHelp(sender)}
             "on" -> {changeEnable(sender,true)}
             "off" -> {changeEnable(sender,false)}
@@ -33,13 +41,28 @@ object ChestCommand:CommandExecutor {
     }
 
     private fun changeEnable(sender: Player, mode: Boolean) {
-
-
+        if(!sender.hasPermission(Permission.ADMIN)){
+            sender.sendMessage("${prefix}§cあなたには権限がありません。")
+            return
+        }
+        if(enable == mode){
+            sender.sendMessage("${prefix}§cすでに§e${mode}§cになっています。")
+        }else{
+            enable = true
+            sender.sendMessage("${prefix}§aプラグインが§e${mode}§aになりました。")
+        }
     }
 
     private fun sendHelp(player: Player){
-
-
+        val msg = """
+            §e===================================
+            §e/pc [help] <- Helpの表示
+            §e/pc wand <- 編集用アイテムの取得
+            §e/pc on/off <- プラグインの有効/無効
+            §d§lCreated by testusuke
+            §e===================================
+        """.trimIndent()
+        player.sendMessage(msg)
     }
 
 }

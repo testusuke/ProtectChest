@@ -5,6 +5,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
+import java.lang.NullPointerException
 
 /**
  * Created on 2020/06/22
@@ -15,6 +16,7 @@ class Main: JavaPlugin() {
     companion object{
         lateinit var plugin:Main
         var enable:Boolean = false
+        var prefix:String = "§e[§aProtect§6Chest§e]§f"
     }
 
     //  Map
@@ -40,6 +42,14 @@ class Main: JavaPlugin() {
         getCommand("pc")?.setExecutor(ChestCommand)
         //  Event
         server.pluginManager.registerEvents(EventListener,this)
+        //  Config
+        this.saveDefaultConfig()
+        enable = try{
+            config.getBoolean("mode")
+        }catch (e:NullPointerException){
+            false
+        }
+
 
     }
 
