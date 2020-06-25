@@ -16,6 +16,7 @@ repositories {
 dependencies {
     implementation("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compile "org.xerial:sqlite-jdbc:3.30.1"
 }
 
 compileKotlin {

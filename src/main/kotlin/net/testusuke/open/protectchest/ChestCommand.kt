@@ -27,6 +27,10 @@ object ChestCommand:CommandExecutor {
 
         when(args[0]){
             "wand" -> {
+                if(!enable){
+                    sendDisable(sender)
+                    return false
+                }
                 if(sender.hasPermission(Permission.ADMIN)){
                     sender.sendMessage("${prefix}§aWandを付与します。")
                     sender.inventory.addItem(plugin.wandItem)
@@ -65,4 +69,7 @@ object ChestCommand:CommandExecutor {
         player.sendMessage(msg)
     }
 
+    private fun sendDisable(player: Player){
+        player.sendMessage("${prefix}§c現在利用できません")
+    }
 }

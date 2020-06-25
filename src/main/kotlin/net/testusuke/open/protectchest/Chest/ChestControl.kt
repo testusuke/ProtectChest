@@ -1,8 +1,6 @@
 package net.testusuke.open.protectchest.Chest
 
-import net.testusuke.open.protectchest.Main.Companion.plugin
 import org.bukkit.Location
-import org.bukkit.block.Chest
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 

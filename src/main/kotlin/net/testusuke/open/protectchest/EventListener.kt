@@ -1,6 +1,7 @@
 package net.testusuke.open.protectchest
 
 import net.testusuke.open.protectchest.Chest.ChestControl
+import net.testusuke.open.protectchest.Main.Companion.enable
 import net.testusuke.open.protectchest.Main.Companion.plugin
 import net.testusuke.open.protectchest.Main.Companion.prefix
 import org.bukkit.Material
@@ -13,7 +14,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.Inventory
 
@@ -21,20 +21,22 @@ import org.bukkit.inventory.Inventory
  * Created on 2020/06/22
  * Author testusuke
  */
-object EventListener:Listener {
+object EventListener : Listener {
 
     @EventHandler
-    fun onClickBlock(e:PlayerInteractEvent){
+    fun onClickBlock(e: PlayerInteractEvent) {
+        if (!enable) return
         val player = e.player
+        if (!player.hasPermission(Permission.ADMIN)) return
         //  左
-        if(e.action == Action.LEFT_CLICK_BLOCK){
+        if (e.action == Action.LEFT_CLICK_BLOCK) {
             //  Item
             val item = player.inventory.itemInMainHand
-            if(item.isSimilar(plugin.wandItem)){
+            if (item.isSimilar(plugin.wandItem)) {
                 //  Block
                 val block = e.clickedBlock ?: return
-                if(plugin.chestMaterialList.contains(block.type)){
-                    if(ChestControl.isProtected(block.location)){
+                if (plugin.chestMaterialList.contains(block.type)) {
+                    if (ChestControl.isProtected(block.location)) {
                         val msg = """
                             ${prefix}§cすでに保護されているブロックです。
                             §a<information>
@@ -45,32 +47,32 @@ object EventListener:Listener {
                         return
                     }
                     val inventory = getInventoryFromBlock(block)
-                    ChestControl.protectChest(block.location,inventory,player)
+                    ChestControl.protectChest(block.location, inventory, player)
                 }
             }
         }
         //  右
-        if(e.action == Action.RIGHT_CLICK_BLOCK){
+        if (e.action == Action.RIGHT_CLICK_BLOCK) {
             //  Item
             val item = player.inventory.itemInMainHand
-            if(item.isSimilar(plugin.wandItem)){
+            if (item.isSimilar(plugin.wandItem)) {
                 //  Block
                 val block = e.clickedBlock ?: return
-                if(plugin.chestMaterialList.contains(block.type)){
-                    if(!ChestControl.isProtected(block.location)){
+                if (plugin.chestMaterialList.contains(block.type)) {
+                    if (!ChestControl.isProtected(block.location)) {
                         player.sendMessage("${prefix}§c保護されていません")
                         return
                     }
-                    ChestControl.unprotectChest(block.location,player)
+                    ChestControl.unprotectChest(block.location, player)
                 }
             }
         }
     }
 
     private fun getInventoryFromBlock(block: Block): Inventory {
-        return when(block.type){
+        return when (block.type) {
             Material.CHEST -> {
-                val chest= block.state as Chest
+                val chest = block.state as Chest
                 chest.inventory
             }
             Material.TRAPPED_CHEST -> {
@@ -90,26 +92,28 @@ object EventListener:Listener {
 
     //  Break
     @EventHandler
-    fun onBreak(e:BlockBreakEvent){
+    fun onBreak(e: BlockBreakEvent) {
+        if (!enable) return
         val player = e.player
         val block = e.block
         //  Block
-        if(plugin.chestMaterialList.contains(block.type)){
-            val location =  block.location
-            if(ChestControl.isProtected(location)){
-                if(player.hasPermission(Permission.ADMIN)){
+        if (plugin.chestMaterialList.contains(block.type)) {
+            val location = block.location
+            if (ChestControl.isProtected(location)) {
+                if (player.hasPermission(Permission.ADMIN)) {
                     ChestControl.unprotectChest(location, player)
                     player.sendMessage("${prefix}§aチェストを壊しました。")
-                }else{
+                } else {
                     e.isCancelled = true
                     player.sendMessage("${prefix}§cあなたには壊せません。")
                 }
             }
         }
     }
+
     //  InventoryClick
     @EventHandler
-    fun onClickEvent(e:InventoryClickEvent){
-
+    fun onClickEvent(e: InventoryClickEvent) {
+        if (!enable) return
     }
 }

@@ -1,7 +1,6 @@
 package net.testusuke.open.protectchest
 
-import net.testusuke.open.protectchest.Chest.ChestInformation
-import org.bukkit.Location
+import net.testusuke.open.protectchest.DataBase.DataBase
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -19,6 +18,8 @@ class Main: JavaPlugin() {
         var prefix:String = "§e[§aProtect§6Chest§e]§f"
     }
 
+    lateinit var db:DataBase
+
     //  Item
     val wandItem:ItemStack by lazy {
         val item = ItemStack(Material.STONE_AXE)
@@ -32,7 +33,7 @@ class Main: JavaPlugin() {
         item
     }
 
-    //  Chest Materila List
+    //  Chest Material List
     val chestMaterialList:MutableList<Material> by lazy {
         val list = mutableListOf<Material>()
         list.add(Material.CHEST)
@@ -59,7 +60,16 @@ class Main: JavaPlugin() {
 
     override fun onEnable() {
         plugin = this
-
+        //  Logger
+        val msg = """
+            ==========================================
+            name: ProtectChest  author: testusuke
+            github: http://github.com/testusuke
+            ==========================================
+        """.trimIndent()
+        logger.info(msg)
+        //  sqlite
+        db = DataBase("sqlite.db")
         //  Command
         getCommand("pc")?.setExecutor(ChestCommand)
         //  Event
@@ -71,15 +81,10 @@ class Main: JavaPlugin() {
         }catch (e:NullPointerException){
             false
         }
-
-
     }
 
     override fun onDisable() {
 
-
     }
-
-
 
 }
