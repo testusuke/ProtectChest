@@ -47,7 +47,8 @@ object EventListener : Listener {
                         return
                     }
                     val inventory = getInventoryFromBlock(block)
-                    ChestControl.protectChest(block.location, inventory, player)
+                    val material = block.type
+                    ChestControl.protectChest(block.location, inventory,material,player)
                 }
             }
         }

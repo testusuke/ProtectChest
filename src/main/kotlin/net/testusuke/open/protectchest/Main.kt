@@ -1,5 +1,6 @@
 package net.testusuke.open.protectchest
 
+import net.testusuke.open.protectchest.Chest.ChestControl
 import net.testusuke.open.protectchest.DataBase.DataBase
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -70,6 +71,7 @@ class Main: JavaPlugin() {
         logger.info(msg)
         //  sqlite
         db = DataBase("sqlite.db")
+        ChestControl.loadChestInformation()
         //  Command
         getCommand("pc")?.setExecutor(ChestCommand)
         //  Event
