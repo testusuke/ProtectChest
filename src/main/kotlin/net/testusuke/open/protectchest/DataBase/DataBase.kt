@@ -1,6 +1,9 @@
 package net.testusuke.open.protectchest.DataBase
 
 import net.testusuke.open.protectchest.Main.Companion.plugin
+import net.testusuke.open.protectchest.Main.Companion.prefix
+import net.testusuke.open.protectchest.Permission
+import org.bukkit.Bukkit
 import java.io.File
 import java.io.IOException
 import java.sql.Connection
@@ -92,6 +95,15 @@ class DataBase(private val db:String) {
     //  DB Error
     var dbError:Boolean = false
     fun sendDBError(msg:String){
+        if(!dbError){
+            Bukkit.broadcastMessage("${prefix}§c§lデータベースエラーです。運営に連絡してください。")
+            for(player in Bukkit.getOnlinePlayers()){
+                if(player.hasPermission(Permission.ADMIN)){
+                    player.sendMessage("${prefix}§c§lデータベースエラーです。担当の開発者にお伝えください。 ErrorMessage: $msg")
+                }
+            }
+        }
         plugin.logger.info("DataBase Error: $msg")
+        dbError = true
     }
 }
