@@ -8,7 +8,7 @@ import java.util.*
  * Created on 2020/06/22
  * Author testusuke
  */
-data class ChestInformation(val location: Location,val name:String,val material:Material,val author:String,val date:String,var protectType: ProtectType)
+data class ChestInformation(val location: Location,val material:Material,val author:String,val date:String)
 /**
  *  Locationは [ , ]で分割保存する。
  */

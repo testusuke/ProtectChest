@@ -46,9 +46,8 @@ object EventListener : Listener {
                         player.sendMessage(msg)
                         return
                     }
-                    val inventory = getInventoryFromBlock(block)
                     val material = block.type
-                    ChestControl.protectChest(block.location, inventory,material,player)
+                    ChestControl.protectChest(block.location,material,player)
                 }
             }
         }
@@ -70,6 +69,7 @@ object EventListener : Listener {
         }
     }
 
+    /*
     private fun getInventoryFromBlock(block: Block): Inventory {
         return when (block.type) {
             Material.CHEST -> {
@@ -89,7 +89,8 @@ object EventListener : Listener {
                 shulker.inventory
             }
         }
-    }
+    }*/
+
 
     //  Break
     @EventHandler
@@ -116,5 +117,12 @@ object EventListener : Listener {
     @EventHandler
     fun onClickEvent(e: InventoryClickEvent) {
         if (!enable) return
+        val player = e.whoClicked
+        val inventory = e.inventory
+        val location = inventory.location ?: return
+        if(ChestControl.isProtected(location)){
+            if(player.hasPermission(Permission.ADMIN))return
+            e.isCancelled = true
+        }
     }
 }

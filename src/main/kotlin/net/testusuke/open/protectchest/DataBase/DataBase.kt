@@ -72,7 +72,6 @@ class DataBase(private val db:String) {
 
     private val TABLE_SQL = "CREATE TABLE IF NOT EXISTS chest_info (" +
             "location   TEXT NOT NULL," +
-            "name  TEXT NOT NULL," +
             "material  TEXT   NOT NULL," +
             "author  TEXT NOT NULL," +
             "date TEXT NOT NULL)"
