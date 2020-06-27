@@ -14,25 +14,26 @@ import java.sql.SQLException
  * Created on 2020/06/25
  * Author testusuke
  */
-class DataBase(private val db:String) {
+class DataBase(private val db: String) {
 
     //  Connection url
     private val connectionUrl = "jdbc:sqlite"
+
     //  Connection DataBase
-    init{
+    init {
 
         //  Class loader
         loadClass()
         //  Create db file
         try {
             val directory = plugin.dataFolder
-            if (!directory.exists())directory.mkdir()
-            val file = File(directory,db)
-            if(!file.exists()){
+            if (!directory.exists()) directory.mkdir()
+            val file = File(directory, db)
+            if (!file.exists()) {
                 file.createNewFile()
                 plugin.logger.info("create new file. ${file.path}")
             }
-        }catch (e: IOException){
+        } catch (e: IOException) {
             plugin.logger.info("Error: can not create new file. $db")
         }
         //  TestConnect
@@ -45,29 +46,29 @@ class DataBase(private val db:String) {
         var connection: Connection? = null
         try {
             connection = DriverManager.getConnection("${connectionUrl}:$db")
-        }catch (e:Exception){
+        } catch (e: Exception) {
             plugin.logger.info("Error: can not get connection.")
         }
         return connection
     }
 
-    private fun loadClass():Boolean {
-        return try{
+    private fun loadClass(): Boolean {
+        return try {
             Class.forName("org.sqlite.JDBC")
             plugin.logger.info("success load class")
             true
-        }catch (e:Exception){
+        } catch (e: Exception) {
             plugin.logger.info("Error: can not load class")
             false
         }
     }
 
-    private fun testConnect():Boolean{
+    private fun testConnect(): Boolean {
         val connection: Connection? = getConnection()
-        return if(connection == null){
+        return if (connection == null) {
             plugin.logger.info("Error: null connection.")
             false
-        }else{
+        } else {
             plugin.logger.info("success connect.")
             true
         }
@@ -78,27 +79,28 @@ class DataBase(private val db:String) {
             "material  TEXT   NOT NULL," +
             "author  TEXT NOT NULL," +
             "date TEXT NOT NULL)"
-    private fun createTable(){
-        val connection= getConnection() ?: return
+
+    private fun createTable() {
+        val connection = getConnection() ?: return
         try {
             val st = connection.createStatement()
             st.execute(TABLE_SQL)
             plugin.logger.info("created table")
             st.close()
             connection.close()
-        }catch (e: SQLException){
+        } catch (e: SQLException) {
             e.printStackTrace()
             plugin.logger.info("Error: can not create table")
         }
     }
 
     //  DB Error
-    var dbError:Boolean = false
-    fun sendDBError(msg:String){
-        if(!dbError){
+    var dbError: Boolean = false
+    fun sendDBError(msg: String) {
+        if (!dbError) {
             Bukkit.broadcastMessage("${prefix}§c§lデータベースエラーです。運営に連絡してください。")
-            for(player in Bukkit.getOnlinePlayers()){
-                if(player.hasPermission(Permission.ADMIN)){
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission(Permission.ADMIN)) {
                     player.sendMessage("${prefix}§c§lデータベースエラーです。担当の開発者にお伝えください。 ErrorMessage: $msg")
                 }
             }

@@ -11,18 +11,18 @@ import java.lang.NullPointerException
  * Created on 2020/06/22
  * Author testusuke
  */
-class Main: JavaPlugin() {
+class Main : JavaPlugin() {
 
-    companion object{
-        lateinit var plugin:Main
-        var enable:Boolean = false
-        var prefix:String = "§e[§aProtect§6Chest§e]§f"
+    companion object {
+        lateinit var plugin: Main
+        var enable: Boolean = false
+        var prefix: String = "§e[§aProtect§6Chest§e]§f"
     }
 
-    lateinit var db:DataBase
+    lateinit var db: DataBase
 
     //  Item
-    val wandItem:ItemStack by lazy {
+    val wandItem: ItemStack by lazy {
         val item = ItemStack(Material.STONE_AXE)
         val meta = item.itemMeta
         meta.setDisplayName("")
@@ -35,7 +35,7 @@ class Main: JavaPlugin() {
     }
 
     //  Chest Material List
-    val chestMaterialList:MutableList<Material> by lazy {
+    val chestMaterialList: MutableList<Material> by lazy {
         val list = mutableListOf<Material>()
         list.add(Material.CHEST)
         list.add(Material.TRAPPED_CHEST)
@@ -75,12 +75,12 @@ class Main: JavaPlugin() {
         //  Command
         getCommand("pc")?.setExecutor(ChestCommand)
         //  Event
-        server.pluginManager.registerEvents(EventListener,this)
+        server.pluginManager.registerEvents(EventListener, this)
         //  Config
         this.saveDefaultConfig()
-        enable = try{
+        enable = try {
             config.getBoolean("mode")
-        }catch (e:NullPointerException){
+        } catch (e: NullPointerException) {
             false
         }
     }

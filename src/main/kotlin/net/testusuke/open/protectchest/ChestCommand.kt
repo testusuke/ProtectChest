@@ -12,52 +12,60 @@ import org.bukkit.entity.Player
  * Created on 2020/06/22
  * Author testusuke
  */
-object ChestCommand:CommandExecutor {
+object ChestCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if(sender !is Player || !sender.hasPermission(Permission.GENERAL)){
+        if (sender !is Player || !sender.hasPermission(Permission.GENERAL)) {
             sender.sendMessage("you do not have permission.")
             return false
         }
 
-        if(args.isEmpty()){
+        if (args.isEmpty()) {
             sendHelp(sender)
             return true
         }
 
-        when(args[0]){
+        when (args[0]) {
             "wand" -> {
-                if(!enable){
+                if (!enable) {
                     sendDisable(sender)
                     return false
                 }
-                if(sender.hasPermission(Permission.ADMIN)){
+                if (sender.hasPermission(Permission.ADMIN)) {
                     sender.sendMessage("${prefix}§aWandを付与します。")
                     sender.inventory.addItem(plugin.wandItem)
-                }else{sender.sendMessage("${prefix}§cあなたには権限がありません。")}
+                } else {
+                    sender.sendMessage("${prefix}§cあなたには権限がありません。")
+                }
             }
-            "help" -> {sendHelp(sender)}
-            "on" -> {changeEnable(sender,true)}
-            "off" -> {changeEnable(sender,false)}
+            "help" -> {
+                sendHelp(sender)
+            }
+            "on" -> {
+                changeEnable(sender, true)
+            }
+            "off" -> {
+                changeEnable(sender, false)
+            }
         }
 
         return false
     }
 
     private fun changeEnable(sender: Player, mode: Boolean) {
-        if(!sender.hasPermission(Permission.ADMIN)){
+        if (!sender.hasPermission(Permission.ADMIN)) {
             sender.sendMessage("${prefix}§cあなたには権限がありません。")
             return
         }
-        if(enable == mode){
+        if (enable == mode) {
             sender.sendMessage("${prefix}§cすでに§e${mode}§cになっています。")
-        }else{
+        } else {
             enable = true
             sender.sendMessage("${prefix}§aプラグインが§e${mode}§aになりました。")
         }
     }
 
-    private fun sendHelp(player: Player){
+    private fun sendHelp(player: Player) {
         val msg = """
             §e===================================
             §e/pc [help] <- Helpの表示
@@ -69,7 +77,7 @@ object ChestCommand:CommandExecutor {
         player.sendMessage(msg)
     }
 
-    private fun sendDisable(player: Player){
+    private fun sendDisable(player: Player) {
         player.sendMessage("${prefix}§c現在利用できません")
     }
 }

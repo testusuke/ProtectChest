@@ -47,7 +47,7 @@ object EventListener : Listener {
                         return
                     }
                     val material = block.type
-                    ChestControl.protectChest(block.location,material,player)
+                    ChestControl.protectChest(block.location, material, player)
                 }
             }
         }
@@ -120,8 +120,8 @@ object EventListener : Listener {
         val player = e.whoClicked
         val inventory = e.inventory
         val location = inventory.location ?: return
-        if(ChestControl.isProtected(location)){
-            if(player.hasPermission(Permission.ADMIN))return
+        if (ChestControl.isProtected(location)) {
+            if (player.hasPermission(Permission.ADMIN)) return
             e.isCancelled = true
         }
     }
