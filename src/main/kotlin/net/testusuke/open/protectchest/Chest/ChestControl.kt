@@ -60,13 +60,18 @@ object ChestControl {
                         val author = resultSet.getString("author").toString()
                         val date = resultSet.getString("date").toString()
                         //  string to any object
-                        var location:Location
+                        var location:Location?
                         try {
                             val x = Integer.parseInt(loc[1]).toDouble()
                             val y = Integer.parseInt(loc[2]).toDouble()
                             val z = Integer.parseInt(loc[3]).toDouble()
+                            val world = Bukkit.getServer().getWorld(loc[0])
+                            if(world == null){
+                                plugin.logger.info("world is null. info: $loc")
+                                continue
+                            }
                             //  format
-                            location = formatLocation(Location(Bukkit.getServer().getWorld(loc[0]),x,y,z))
+                            location = formatLocation(Location(world,x,y,z))
                         }catch (e:NumberFormatException){
                             plugin.logger.info("can not read chest info: $loc")
                             continue
@@ -76,7 +81,7 @@ object ChestControl {
                         val chestInformation = ChestInformation(location, material, author, date)
                         locationChestMap[location] = chestInformation
                         //  Logger
-                        val msg = "load chest. info<world:${loc[0]} x:${loc[1]} y:${loc[2]} z:${loc[3]} material:${materialName} author:${author}>"
+                        val msg = "load chest. info<world:${chestInformation.location.world.name} x:${chestInformation.location.x} y:${chestInformation.location.y} z:${chestInformation.location.z} material:${materialName} author:${author}>"
                         plugin.logger.info(msg)
                         count++
                     }
@@ -110,13 +115,14 @@ object ChestControl {
                     return
                 }
                 try {
-                    val loc = "${location.world.uid},${location.x.toInt()},${location.y.toInt()},${location.z.toInt()}"
+                    val loc = "${location.world.name},${location.x.toInt()},${location.y.toInt()},${location.z.toInt()}"
                     val sql = "INSERT INTO chest_info VALUES ('${loc}','${material.name}','${player.name}','${date}');"
                     val statement = connection.createStatement()
                     if (!statement.execute(sql)) {
                         //  Map
                         locationChestMap[location] = chestInfo
                         plugin.logger.info("loaded chest information.")
+                        player.sendMessage("${prefix}§a保護しました。")
                     } else {
                         plugin.logger.info("could not load chest information.")
                     }
@@ -148,7 +154,7 @@ object ChestControl {
                     return
                 }
                 try {
-                    val loc = "${location.world.uid},${location.x.toInt()},${location.y.toInt()},${location.z.toInt()}"
+                    val loc = "${location.world.name},${location.x.toInt()},${location.y.toInt()},${location.z.toInt()}"
                     val sql = "DELETE FROM chest_info WHERE location='$loc';"
                     val statement = connection.createStatement()
                     statement.executeUpdate(sql)
