@@ -59,11 +59,18 @@ object ChestControl {
                         val author = resultSet.getString("author").toString()
                         val date = resultSet.getString("date").toString()
                         //  string to any object
-                        val location = Location(Bukkit.getServer().getWorld(loc[0]), loc[1].toInt().toDouble(), loc[2].toInt().toDouble(), loc[3].toInt().toDouble())
+                        val x = Integer.parseInt(loc[1]).toDouble()
+                        val y = Integer.parseInt(loc[2]).toDouble()
+                        val z = Integer.parseInt(loc[3]).toDouble()
+                        //  format
+                        val location = formatLocation(Location(Bukkit.getServer().getWorld(loc[0]),x,y,z))
                         val material = Material.getMaterial(materialName) ?: continue
                         //  class
                         val chestInformation = ChestInformation(location, material, author, date)
                         locationChestMap[location] = chestInformation
+                        //  Logger
+                        val msg = "load chest. info<world:${loc[0]} x:${loc[1]} y:${loc[2]} z:${loc[3]} material:${materialName} author:${author}>"
+                        plugin.logger.info(msg)
                         count++
                     }
                     plugin.logger.info("loaded $count chests information.")
@@ -81,9 +88,10 @@ object ChestControl {
 
     }
 
-    fun protectChest(location: Location, material: Material, player: Player) {
+    fun protectChest(locationB: Location, material: Material, player: Player) {
         val simpleDate = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
         val date = simpleDate.format(Date())
+        val location = formatLocation(locationB)
         val chestInfo = ChestInformation(location, material, player.name, date)
         object : BukkitRunnable() {
             override fun run() {
@@ -117,7 +125,8 @@ object ChestControl {
         }.runTask(plugin)
     }
 
-    fun unprotectChest(location: Location, player: Player) {
+    fun unprotectChest(locationB: Location, player: Player) {
+        val location = formatLocation(locationB)
         if (!locationChestMap.containsKey(location)) {
             player.sendMessage("${prefix}§c保護情報が見つかりませんでした。")
             return
@@ -152,11 +161,16 @@ object ChestControl {
     }
 
     fun isProtected(location: Location): Boolean {
-        return locationChestMap.containsKey(location)
+        return locationChestMap.containsKey(formatLocation(location))
     }
 
     fun getInformation(location: Location): ChestInformation? {
-        return locationChestMap[location]
+        return locationChestMap[formatLocation(location)]
     }
 
+    //  Unity
+    //  Location format
+    private fun formatLocation(location:Location): Location{
+        return Location(location.world,location.x.toInt().toDouble(),location.y.toInt().toDouble(),location.z.toInt().toDouble())
+    }
 }

@@ -74,15 +74,18 @@ class DataBase(private val db: String) {
         }
     }
 
-    private val TABLE_SQL = "CREATE TABLE IF NOT EXISTS chest_info (" +
-            "location   TEXT NOT NULL," +
-            "material  TEXT   NOT NULL," +
-            "author  TEXT NOT NULL," +
-            "date TEXT NOT NULL)"
-
     private fun createTable() {
-        val connection = getConnection() ?: return
+        val connection = getConnection()
+        if(connection == null){
+            plugin.logger.info("can not access db. method: DataBase/createTable")
+            return
+        }
         try {
+            val TABLE_SQL = "CREATE TABLE IF NOT EXISTS chest_info (" +
+                    "location   TEXT NOT NULL," +
+                    "material  TEXT   NOT NULL," +
+                    "author  TEXT NOT NULL," +
+                    "date TEXT NOT NULL)"
             val st = connection.createStatement()
             st.execute(TABLE_SQL)
             plugin.logger.info("created table")

@@ -27,8 +27,8 @@ class Main : JavaPlugin() {
         val meta = item.itemMeta
         meta.setDisplayName("")
         val lore = mutableListOf<String>()
-        lore.add("左クリック:保護")
-        lore.add("右クリック:保護解除")
+        lore.add("右クリック:保護")
+        lore.add("左クリック:保護解除")
         meta.lore = lore
         item.itemMeta = meta
         item
@@ -69,9 +69,6 @@ class Main : JavaPlugin() {
             ==========================================
         """.trimIndent()
         logger.info(msg)
-        //  sqlite
-        db = DataBase("sqlite.db")
-        ChestControl.loadChestInformation()
         //  Command
         getCommand("pc")?.setExecutor(ChestCommand)
         //  Event
@@ -83,9 +80,16 @@ class Main : JavaPlugin() {
         } catch (e: NullPointerException) {
             false
         }
+        //  sqlite
+        db = DataBase("sqlite.db")
+        ChestControl.loadChestInformation()
     }
 
     override fun onDisable() {
+
+        //  Config
+        config.set("mode", enable)
+        saveConfig()
 
     }
 

@@ -4,6 +4,7 @@ import net.testusuke.open.protectchest.Chest.ChestControl
 import net.testusuke.open.protectchest.Main.Companion.enable
 import net.testusuke.open.protectchest.Main.Companion.plugin
 import net.testusuke.open.protectchest.Main.Companion.prefix
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Barrel
 import org.bukkit.block.Block
@@ -28,29 +29,6 @@ object EventListener : Listener {
         if (!enable) return
         val player = e.player
         if (!player.hasPermission(Permission.ADMIN)) return
-        //  左
-        if (e.action == Action.LEFT_CLICK_BLOCK) {
-            //  Item
-            val item = player.inventory.itemInMainHand
-            if (item.isSimilar(plugin.wandItem)) {
-                //  Block
-                val block = e.clickedBlock ?: return
-                if (plugin.chestMaterialList.contains(block.type)) {
-                    if (ChestControl.isProtected(block.location)) {
-                        val msg = """
-                            ${prefix}§cすでに保護されているブロックです。
-                            §a<information>
-                            §eauthor: ${ChestControl.getInformation(block.location)?.author}
-                            §edate: ${ChestControl.getInformation(block.location)?.date}
-                        """.trimIndent()
-                        player.sendMessage(msg)
-                        return
-                    }
-                    val material = block.type
-                    ChestControl.protectChest(block.location, material, player)
-                }
-            }
-        }
         //  右
         if (e.action == Action.RIGHT_CLICK_BLOCK) {
             //  Item
@@ -59,11 +37,36 @@ object EventListener : Listener {
                 //  Block
                 val block = e.clickedBlock ?: return
                 if (plugin.chestMaterialList.contains(block.type)) {
-                    if (!ChestControl.isProtected(block.location)) {
+                    val location = block.location
+                    if (ChestControl.isProtected(location)) {
+                        val msg = """
+                            ${prefix}§cすでに保護されているブロックです。
+                            §a<information>
+                            §eauthor: ${ChestControl.getInformation(location)?.author}
+                            §edate: ${ChestControl.getInformation(location)?.date}
+                        """.trimIndent()
+                        player.sendMessage(msg)
+                        return
+                    }
+                    val material = block.type
+                    ChestControl.protectChest(location, material, player)
+                }
+            }
+        }
+        //  左
+        if (e.action == Action.LEFT_CLICK_BLOCK) {
+            //  Item
+            val item = player.inventory.itemInMainHand
+            if (item.isSimilar(plugin.wandItem)) {
+                //  Block
+                val block = e.clickedBlock ?: return
+                if (plugin.chestMaterialList.contains(block.type)) {
+                    val location = block.location
+                    if (!ChestControl.isProtected(location)) {
                         player.sendMessage("${prefix}§c保護されていません")
                         return
                     }
-                    ChestControl.unprotectChest(block.location, player)
+                    ChestControl.unprotectChest(location, player)
                 }
             }
         }
