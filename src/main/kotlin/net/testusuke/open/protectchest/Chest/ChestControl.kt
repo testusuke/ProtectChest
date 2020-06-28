@@ -10,6 +10,7 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.scheduler.BukkitRunnable
+import java.lang.NumberFormatException
 import java.sql.Connection
 import java.sql.SQLException
 import java.text.SimpleDateFormat
@@ -59,11 +60,17 @@ object ChestControl {
                         val author = resultSet.getString("author").toString()
                         val date = resultSet.getString("date").toString()
                         //  string to any object
-                        val x = Integer.parseInt(loc[1]).toDouble()
-                        val y = Integer.parseInt(loc[2]).toDouble()
-                        val z = Integer.parseInt(loc[3]).toDouble()
-                        //  format
-                        val location = formatLocation(Location(Bukkit.getServer().getWorld(loc[0]),x,y,z))
+                        var location:Location
+                        try {
+                            val x = Integer.parseInt(loc[1]).toDouble()
+                            val y = Integer.parseInt(loc[2]).toDouble()
+                            val z = Integer.parseInt(loc[3]).toDouble()
+                            //  format
+                            location = formatLocation(Location(Bukkit.getServer().getWorld(loc[0]),x,y,z))
+                        }catch (e:NumberFormatException){
+                            plugin.logger.info("can not read chest info: $loc")
+                            continue
+                        }
                         val material = Material.getMaterial(materialName) ?: continue
                         //  class
                         val chestInformation = ChestInformation(location, material, author, date)
@@ -106,7 +113,7 @@ object ChestControl {
                     val loc = "${location.world.uid},${location.x.toInt()},${location.y.toInt()},${location.z.toInt()}"
                     val sql = "INSERT INTO chest_info VALUES ('${loc}','${material.name}','${player.name}','${date}');"
                     val statement = connection.createStatement()
-                    if (statement.execute(sql)) {
+                    if (!statement.execute(sql)) {
                         //  Map
                         locationChestMap[location] = chestInfo
                         plugin.logger.info("loaded chest information.")
